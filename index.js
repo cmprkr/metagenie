@@ -58,7 +58,7 @@ async function load() {
 	//await usernamePage.waitForTimeout(2000);
 	
 	await usernamePage.keyboard.press("Enter")
-	await usernamePage.waitForTimeout(2000);
+	await usernamePage.waitForTimeout(1500);
 	await usernamePage.waitForTimeout(50);
 
 	username = await usernamePage.$eval(
@@ -119,8 +119,7 @@ async function load() {
 	runtime("birthday");
 
 	await page.bringToFront();
-
-	await instagramPage.waitForTimeout(40000);
+	await instagramPage.waitForTimeout(38000);
 
 	instagramCode = await page.evaluate(() => {
         const emailRows = Array.from(document.querySelectorAll('#email_list tr'));
@@ -137,17 +136,15 @@ async function load() {
         return null;
     });
 
-	console.log(instagramCode)
 	runtime("signup");
 
+	await instagramPage.bringToFront();
+	await instagramPage.waitForSelector('input[name="email_confirmation_code"]');
+	await instagramPage.focus('input[name="email_confirmation_code"]');
+	await instagramPage.keyboard.type(instagramCode);
+	//await instagramPage.keyboard.press("Enter")
+
 	await instagramPage.waitForTimeout(1000000);
-
-	const subjectElement = await page.waitForSelector('.subject--text');
-	const subjectText = await page.evaluate(subjectElement => subjectElement.textContent, subjectElement);
-	const codeMatch = subjectText.match(/\d{6}/);
-	const code = codeMatch ? codeMatch[0] : null;
-	console.log(code);
-
 	await browser.close();
 
 	runtime("final");
