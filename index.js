@@ -12,6 +12,7 @@ const password = "Hq7Un34e";
 let emailAddress;
 let fullname;
 let username;
+let instagramCode;
 
 async function runtime(title) {
 	var endTime = Date.now();
@@ -54,7 +55,10 @@ async function load() {
 	await usernamePage.waitForSelector('input[id="IGU_name"]');
 	await usernamePage.focus('input[id="IGU_name"]');
 	await usernamePage.keyboard.type(fullname);
-	await usernamePage.click('input[type="submit"]');
+	//await usernamePage.waitForTimeout(2000);
+	
+	await usernamePage.keyboard.press("Enter")
+	await usernamePage.waitForTimeout(2000);
 	await usernamePage.waitForTimeout(50);
 
 	username = await usernamePage.$eval(
@@ -115,10 +119,26 @@ async function load() {
 	runtime("birthday");
 
 	await page.bringToFront();
-	await page.waitForSelector('td.td2:contains("support@instagram.com")');
 
+	await instagramPage.waitForTimeout(40000);
+
+	instagramCode = await page.evaluate(() => {
+        const emailRows = Array.from(document.querySelectorAll('#email_list tr'));
+        for (const row of emailRows) {
+            const sender = row.querySelector('.td2').innerText;
+            if (sender === 'no-reply@mail.instagram.com') {
+                const content = row.querySelector('.td3').innerText;
+                const codeMatch = content.match(/\d{6}/);
+                if (codeMatch) {
+                    return codeMatch[0];
+                }
+            }
+        }
+        return null;
+    });
+
+	console.log(instagramCode)
 	runtime("signup");
-
 
 	await instagramPage.waitForTimeout(1000000);
 
@@ -128,7 +148,7 @@ async function load() {
 	const code = codeMatch ? codeMatch[0] : null;
 	console.log(code);
 
-	//await browser.close();
+	await browser.close();
 
 	runtime("final");
 }
