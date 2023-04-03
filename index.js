@@ -1,7 +1,10 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs/promises");
 const startTime = Date.now();
-const domain = "https://cryptogmail.com/";
+const emaildomain = "https://www.guerrillamail.com/#";
+const namedomain = "https://www.behindthename.com/random/random.php?gender=u&number=2&sets=1&surname=&norare=yes&nodiminutives=yes&usage_eng=1"
+const instagramdomain = "https://www.instagram.com/";
+const usernamedomain = "https://instausername.com/";
 const screenshotpath = "screenshot.png";
 
 const password = "Hq7Un34e";
@@ -27,18 +30,18 @@ async function load() {
 		"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36"
 		);
 
-	await page.goto(domain);
+	await page.goto(emaildomain);
 	runtime("load");
 
 	await page.screenshot({ path: screenshotpath, fullPage: true });
 
-	emailAddress = await page.$eval(".js-email", (div) =>
-		div.textContent.trim()
+	emailAddress = await page.$eval("#email-widget", (span) =>
+		span.textContent.trim()
 		);
 	runtime("gather address");
 
 	const namePage = await browser.newPage();
-	await namePage.goto("https://www.behindthename.com/random/random.php?gender=u&number=2&sets=1&surname=&norare=yes&nodiminutives=yes&usage_eng=1");
+	await namePage.goto(namedomain);
 
 	fullname = await namePage.$eval(".random-results", (div) =>
 		div.textContent.trim().replace(/\s+/g, " ")
@@ -46,7 +49,7 @@ async function load() {
 	runtime("gather name");
 
 	const usernamePage = await browser.newPage();
-	await usernamePage.goto("https://instausername.com/");
+	await usernamePage.goto(usernamedomain);
 
 	await usernamePage.waitForSelector('input[id="IGU_name"]');
 	await usernamePage.focus('input[id="IGU_name"]');
@@ -61,8 +64,10 @@ async function load() {
 
 	runtime("gather username");
 
+	//username = "jlsakdjfhalsdgfakdjyfgalk"
+
 	const instagramPage = await browser.newPage();
-	await instagramPage.goto("https://www.instagram.com/");
+	await instagramPage.goto(instagramdomain);
 
 
 	await instagramPage.waitForSelector('a[href="/accounts/emailsignup/"]');
@@ -109,11 +114,13 @@ async function load() {
 
 	runtime("birthday");
 
+	await page.bringToFront();
+	await page.waitForSelector('td.td2:contains("support@instagram.com")');
+
 	runtime("signup");
 
 
 	await instagramPage.waitForTimeout(1000000);
-	await page.bringToFront();
 
 	const subjectElement = await page.waitForSelector('.subject--text');
 	const subjectText = await page.evaluate(subjectElement => subjectElement.textContent, subjectElement);
