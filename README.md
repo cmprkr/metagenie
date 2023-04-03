@@ -16,9 +16,9 @@ This script requires the following dependencies:
 
 ## Usage
 To use this script, run the following command in your terminal:
-```node <filename.js>```
+```node <index.js>```
 
-Make sure to replace `<filename.js>` with the name of the file that contains the script.
+Make sure to replace `<index.js>` with the name of the file that contains the script.
 
 The script will then launch a Chromium instance using Puppeteer and automate the creation of a new Instagram account. The email address, name, username, and password of the new account will be output to the console at the end of the script.
 
