@@ -13,8 +13,35 @@ let emailAddress;
 let fullname;
 let username;
 let instagramCode;
+let error = 0;
 
 let lastEndTime = startTime;
+
+const readline = require('readline');
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+let numrep = null;
+
+const askUser = () => {
+  rl.question('Number of accounts: ', (userInput) => {
+    const inputAsNumber = parseInt(userInput);
+
+    if (isNaN(inputAsNumber) || inputAsNumber < 1 || inputAsNumber > 50) {
+      console.log('Please enter a valid number between 1 and 50');
+      askUser();
+    } else {
+      numrep = inputAsNumber;
+      rl.close();
+      start(numrep);
+    }
+  });
+};
+
+askUser();
 
 async function runtime(title) {
   const endTime = Date.now();
@@ -76,7 +103,6 @@ async function load() {
 
 	const instagramPage = await browser.newPage();
 	await instagramPage.goto(instagramdomain);
-
 
 	await instagramPage.waitForSelector('a[href="/accounts/emailsignup/"]');
 	await instagramPage.click('a[href="/accounts/emailsignup/"]');
@@ -189,10 +215,6 @@ async function load() {
 	  	await fs.appendFile(filename, csvString);
 	}
 
-	// TODO: Append account to CSV file
-	const account = { username, status: "active, suspended" };
-	await appendToCSV("accounts.csv", account);
-
 	await instagramPage.bringToFront();
 	await instagramPage.waitForSelector('input[name="email_confirmation_code"]');
 	await instagramPage.focus('input[name="email_confirmation_code"]');
@@ -200,6 +222,24 @@ async function load() {
 	await instagramPage.keyboard.press("Enter")
 
 	await instagramPage.waitForTimeout(1000);
+	while (instagramPage.url().includes('instagram.com/accounts/emailsignup')) {
+	    await instagramPage.waitForNavigation({ waitUntil: 'networkidle0' });
+	}
+
+	if (instagramPage.url().includes('suspended')) {
+
+	  	const accountsuspended = { username, status: "active, suspended" };
+	  	await appendToCSV("accounts.csv", accountsuspended);
+
+	} else {
+
+	  	const accountcreated = { username, status: "active, live" };
+	  	await appendToCSV("accounts.csv", accountcreated);
+
+	  	await instagramPage.keyboard.press("Tab")
+	  	await instagramPage.keyboard.press("Enter")
+	}
+
 	await browser.close();
 
 	runtime("final");
@@ -216,9 +256,10 @@ async function start(number) {
 		console.log(fullname)
 		console.log(username)
 		console.log(password)
+		console.log(`\nProgram finished with ${error} errors.`)
 
 		i++
 	}
 }
 
-start(1);
+start(numrep);
