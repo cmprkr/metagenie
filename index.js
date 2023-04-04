@@ -14,10 +14,14 @@ let fullname;
 let username;
 let instagramCode;
 
+let lastEndTime = startTime;
+
 async function runtime(title) {
-	var endTime = Date.now();
-	var runtime = endTime - startTime;
-	console.log(`${title} runtime: ${runtime}ms`);
+  const endTime = Date.now();
+  const runtime = endTime - lastEndTime;
+  const totalRuntime = endTime - startTime;
+  console.log(`${title} runtime: ${runtime}ms (${totalRuntime}ms)`);
+  lastEndTime = endTime;
 }
 
 async function load() {
@@ -119,7 +123,41 @@ async function load() {
 	runtime("birthday");
 
 	await page.bringToFront();
-	await instagramPage.waitForTimeout(38000);
+
+	console.log("\nEMAILSTATUS--")
+	const tickDiv = await page.$('#tick');
+
+	let i = 0;
+	while (i < 1) {
+
+	  	const tickDiv = await page.$('#tick');
+	  	let innerHTML = await page.evaluate(div => div.innerHTML, tickDiv);
+
+	  	if (innerHTML === '<img src="/img/checking-mail.gif" align="top" border="0" alt="Hold on...">Checking...') {
+	  		console.log("Done.");
+
+	  		const senderElement = await page.$('.td2');
+			const sender = await page.evaluate(element => element.innerHTML.trim(), senderElement);
+	  		if (sender === 'no-reply@mail.instagram.com') {
+	  			i = 1;
+	  		}
+
+	  	} else if (innerHTML === "Done.") {
+	  		console.log(innerHTML);
+
+	  		const senderElement = await page.$('.td2');
+			const sender = await page.evaluate(element => element.innerHTML.trim(), senderElement);
+	  		if (sender === 'no-reply@mail.instagram.com') {
+	  			i = 1;
+	  		}
+
+	  	} else {
+	  		console.log(innerHTML);
+	  	}
+
+	  	await page.waitForTimeout(1000);
+
+	}
 
 	instagramCode = await page.evaluate(() => {
         const emailRows = Array.from(document.querySelectorAll('#email_list tr'));
@@ -136,6 +174,7 @@ async function load() {
         return null;
     });
 
+	console.log("\nRUNTIME--")
 	runtime("signup");
 
 	await instagramPage.bringToFront();
