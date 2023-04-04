@@ -14,10 +14,14 @@ let fullname;
 let username;
 let instagramCode;
 
+let lastEndTime = startTime;
+
 async function runtime(title) {
-	var endTime = Date.now();
-	var runtime = endTime - startTime;
-	console.log(`${title} runtime: ${runtime}ms`);
+  const endTime = Date.now();
+  const runtime = endTime - lastEndTime;
+  const totalRuntime = endTime - startTime;
+  console.log(`${title} runtime: ${runtime}ms (${totalRuntime}ms)`);
+  lastEndTime = endTime;
 }
 
 async function load() {
@@ -119,7 +123,41 @@ async function load() {
 	runtime("birthday");
 
 	await page.bringToFront();
-	await instagramPage.waitForTimeout(38000);
+
+	console.log("\nEMAILSTATUS--")
+	const tickDiv = await page.$('#tick');
+
+	let i = 0;
+	while (i < 1) {
+
+	  	const tickDiv = await page.$('#tick');
+	  	let innerHTML = await page.evaluate(div => div.innerHTML, tickDiv);
+
+	  	if (innerHTML === '<img src="/img/checking-mail.gif" align="top" border="0" alt="Hold on...">Checking...') {
+	  		console.log("Done.");
+
+	  		const senderElement = await page.$('.td2');
+			const sender = await page.evaluate(element => element.innerHTML.trim(), senderElement);
+	  		if (sender === 'no-reply@mail.instagram.com') {
+	  			i = 1;
+	  		}
+
+	  	} else if (innerHTML === "Done.") {
+	  		console.log(innerHTML);
+
+	  		const senderElement = await page.$('.td2');
+			const sender = await page.evaluate(element => element.innerHTML.trim(), senderElement);
+	  		if (sender === 'no-reply@mail.instagram.com') {
+	  			i = 1;
+	  		}
+
+	  	} else {
+	  		console.log(innerHTML);
+	  	}
+
+	  	await page.waitForTimeout(1000);
+
+	}
 
 	instagramCode = await page.evaluate(() => {
         const emailRows = Array.from(document.querySelectorAll('#email_list tr'));
@@ -136,28 +174,51 @@ async function load() {
         return null;
     });
 
+	console.log("\nRUNTIME--")
 	runtime("signup");
+
+	async function appendToCSV(filename, data) {
+
+	  	const csvString = `${data.username},"${data.status}"\n`;
+	  	try {
+	    	await fs.access(filename, fs.constants.F_OK);
+	  	} catch (err) {
+	    	// File doesn't exist yet, so add header row
+	    	await fs.writeFile(filename, "username,status\n");
+	  	}
+	  	await fs.appendFile(filename, csvString);
+	}
+
+	// TODO: Append account to CSV file
+	const account = { username, status: "active, suspended" };
+	await appendToCSV("accounts.csv", account);
 
 	await instagramPage.bringToFront();
 	await instagramPage.waitForSelector('input[name="email_confirmation_code"]');
 	await instagramPage.focus('input[name="email_confirmation_code"]');
 	await instagramPage.keyboard.type(instagramCode);
-	//await instagramPage.keyboard.press("Enter")
+	await instagramPage.keyboard.press("Enter")
 
-	await instagramPage.waitForTimeout(1000000);
+	await instagramPage.waitForTimeout(1000);
 	await browser.close();
 
 	runtime("final");
 }
 
-async function start() {
-	console.log("\nRUNTIME--")
-	await load()
-	console.log("\nDATA--")
-	console.log(emailAddress)
-	console.log(fullname)
-	console.log(username)
-	console.log(password)
+async function start(number) {
+
+	let i = 0;
+	while (i < number) {
+		console.log("\nRUNTIME--")
+		await load()
+		console.log("\nDATA--")
+		console.log(emailAddress)
+		console.log(fullname)
+		console.log(username)
+		console.log(password)
+
+		i++
+	}
 }
 
-start();
+start(1);

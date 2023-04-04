@@ -1,5 +1,8 @@
 # metagenie
 
+## Demonstration
+Click [here](https://vimeo.com/814458911) for a video demonstrating the bot creation script.
+
 ## Introduction
 This file is a JavaScript file that uses the Puppeteer library to automate the creation of an Instagram account using a Guerrilla Mail email address, a random name, and a random username. The purpose of this script is to create a test Instagram account for automation testing.
 
