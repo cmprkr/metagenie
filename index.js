@@ -177,26 +177,48 @@ async function load() {
 	console.log("\nRUNTIME--")
 	runtime("signup");
 
+	async function appendToCSV(filename, data) {
+
+	  	const csvString = `${data.username},"${data.status}"\n`;
+	  	try {
+	    	await fs.access(filename, fs.constants.F_OK);
+	  	} catch (err) {
+	    	// File doesn't exist yet, so add header row
+	    	await fs.writeFile(filename, "username,status\n");
+	  	}
+	  	await fs.appendFile(filename, csvString);
+	}
+
+	// TODO: Append account to CSV file
+	const account = { username, status: "active, suspended" };
+	await appendToCSV("accounts.csv", account);
+
 	await instagramPage.bringToFront();
 	await instagramPage.waitForSelector('input[name="email_confirmation_code"]');
 	await instagramPage.focus('input[name="email_confirmation_code"]');
 	await instagramPage.keyboard.type(instagramCode);
-	//await instagramPage.keyboard.press("Enter")
+	await instagramPage.keyboard.press("Enter")
 
-	await instagramPage.waitForTimeout(1000000);
+	await instagramPage.waitForTimeout(1000);
 	await browser.close();
 
 	runtime("final");
 }
 
-async function start() {
-	console.log("\nRUNTIME--")
-	await load()
-	console.log("\nDATA--")
-	console.log(emailAddress)
-	console.log(fullname)
-	console.log(username)
-	console.log(password)
+async function start(number) {
+
+	let i = 0;
+	while (i < number) {
+		console.log("\nRUNTIME--")
+		await load()
+		console.log("\nDATA--")
+		console.log(emailAddress)
+		console.log(fullname)
+		console.log(username)
+		console.log(password)
+
+		i++
+	}
 }
 
-start();
+start(1);
