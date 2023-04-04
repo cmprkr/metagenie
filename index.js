@@ -52,11 +52,11 @@ async function runtime(title) {
 }
 
 async function load() {
-	const browser = await puppeteer.launch({
-		headless: false,
+	const browser1 = await puppeteer.launch({
+		headless: true,
 		args: ["--incognito"],
 	});
-	const page = await browser.newPage();
+	const page = await browser1.newPage();
 
 	await page.setUserAgent(
 		"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36"
@@ -72,7 +72,7 @@ async function load() {
 		);
 	runtime("gather address");
 
-	const namePage = await browser.newPage();
+	const namePage = await browser1.newPage();
 	await namePage.goto(namedomain);
 
 	fullname = await namePage.$eval(".random-results", (div) =>
@@ -80,7 +80,7 @@ async function load() {
 		);
 	runtime("gather name");
 
-	const usernamePage = await browser.newPage();
+	const usernamePage = await browser1.newPage();
 	await usernamePage.goto(usernamedomain);
 
 	await usernamePage.waitForSelector('input[id="IGU_name"]');
@@ -99,9 +99,7 @@ async function load() {
 
 	runtime("gather username");
 
-	//username = "jlsakdjfhalsdgfakdjyfgalk"
-
-	const instagramPage = await browser.newPage();
+	const instagramPage = await browser1.newPage();
 	await instagramPage.goto(instagramdomain);
 
 	await instagramPage.waitForSelector('a[href="/accounts/emailsignup/"]');
@@ -240,7 +238,7 @@ async function load() {
 	  	await instagramPage.keyboard.press("Enter")
 	}
 
-	await browser.close();
+	await browser1.close();
 
 	runtime("final");
 }
