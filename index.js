@@ -430,12 +430,12 @@ async function load() {
 
 	if (instagramPage2.url().includes('suspended')) {
 
-	  	const accountsuspended = { username, status: "active, suspended" };
+	  	const accountsuspended = { username2, status: "active, suspended" };
 	  	await appendToCSV("accounts.csv", accountsuspended);
 
 	} else {
 
-	  	const accountcreated = { username, status: "active, live" };
+	  	const accountcreated = { username2, status: "active, live" };
 	  	await appendToCSV("accounts.csv", accountcreated);
 
 	  	await instagramPage2.keyboard.press("Tab")
@@ -457,6 +457,11 @@ async function start(number) {
 		console.log(emailAddress)
 		console.log(fullname)
 		console.log(username)
+		console.log(password)
+		console.log("\nDATA--")
+		console.log(emailAddress2)
+		console.log(fullname2)
+		console.log(username2)
 		console.log(password)
 
 		i++
