@@ -27,7 +27,7 @@ const rl = readline.createInterface({
 let numrep = null;
 
 const askUser = () => {
-  rl.question('Number of accounts: ', (userInput) => {
+  rl.question('Number of iterations: ', (userInput) => {
     const inputAsNumber = parseInt(userInput);
 
     if (isNaN(inputAsNumber) || inputAsNumber < 1 || inputAsNumber > 50) {
