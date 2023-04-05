@@ -382,18 +382,6 @@ async function load() {
 
 	console.log("\nRUNTIME--")
 
-	async function appendToCSV(filename, data) {
-
-	  	const csvString = `${data.username},"${data.status}"\n`;
-	  	try {
-	    	await fs.access(filename, fs.constants.F_OK);
-	  	} catch (err) {
-	    	// File doesn't exist yet, so add header row
-	    	await fs.writeFile(filename, "username,status\n");
-	  	}
-	  	await fs.appendFile(filename, csvString);
-	}
-
 	await instagramPage2.bringToFront();
 	await instagramPage2.waitForSelector('input[name="email_confirmation_code"]');
 	await instagramPage2.focus('input[name="email_confirmation_code"]');
@@ -416,12 +404,14 @@ async function load() {
 	  	const accountsuspended = { username, status: "active, suspended" };
 	  	await appendToCSV("accounts.csv", accountsuspended);
 	  	status1 = "SUSPENDED"
+	  	console.log("SUSPENDED ACCOUNT")
 
 	} else {
 
 	  	const accountcreated = { username, status: "active, live" };
 	  	await appendToCSV("accounts.csv", accountcreated);
 	  	status1 = "LIVE"
+	  	console.log("LIVE ACCOUNT")
 
 	  	await instagramPage.keyboard.press("Tab")
 	  	await instagramPage.keyboard.press("Enter")
@@ -443,12 +433,14 @@ async function load() {
 	  	const accountsuspended = { username2, status: "active, suspended" };
 	  	await appendToCSV("accounts.csv", accountsuspended);
 	  	status2 = "SUSPENDED"
+	  	console.log("SUSPENDED ACCOUNT")
 
 	} else {
 
 	  	const accountcreated = { username2, status: "active, live" };
 	  	await appendToCSV("accounts.csv", accountcreated);
 	  	status2 = "LIVE"
+	  	console.log("SUSPENDED ACCOUNT")
 
 	  	await instagramPage2.keyboard.press("Tab")
 	  	await instagramPage2.keyboard.press("Enter")
@@ -476,7 +468,7 @@ async function start(number) {
 		console.log(fullname2)
 		console.log(username2)
 		console.log(password)
-		console.log(status2 + "")
+		console.log(status2 + "\n")
 
 		i++
 	}
