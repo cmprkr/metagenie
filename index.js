@@ -13,7 +13,15 @@ let emailAddress;
 let fullname;
 let username;
 let instagramCode;
+
+let emailAddress2;
+let fullname2;
+let username2;
+let instagramCode2;
+
 let error = 0;
+let status1 = null
+let status2 = null
 
 let lastEndTime = startTime;
 
@@ -54,12 +62,12 @@ async function runtime(title) {
 async function load() {
 
 	const browser1 = await puppeteer.launch({
-		headless: false,
+		headless: true,
 		args: ["--incognito"],
 	});
 
 	const browser2 = await puppeteer.launch({ 
-	    headless: false,
+	    headless: true,
 	    args: ["--incognito"],
 	});
 
@@ -407,11 +415,13 @@ async function load() {
 
 	  	const accountsuspended = { username, status: "active, suspended" };
 	  	await appendToCSV("accounts.csv", accountsuspended);
+	  	status1 = "SUSPENDED"
 
 	} else {
 
 	  	const accountcreated = { username, status: "active, live" };
 	  	await appendToCSV("accounts.csv", accountcreated);
+	  	status1 = "LIVE"
 
 	  	await instagramPage.keyboard.press("Tab")
 	  	await instagramPage.keyboard.press("Enter")
@@ -432,11 +442,13 @@ async function load() {
 
 	  	const accountsuspended = { username2, status: "active, suspended" };
 	  	await appendToCSV("accounts.csv", accountsuspended);
+	  	status2 = "SUSPENDED"
 
 	} else {
 
 	  	const accountcreated = { username2, status: "active, live" };
 	  	await appendToCSV("accounts.csv", accountcreated);
+	  	status2 = "LIVE"
 
 	  	await instagramPage2.keyboard.press("Tab")
 	  	await instagramPage2.keyboard.press("Enter")
@@ -458,11 +470,13 @@ async function start(number) {
 		console.log(fullname)
 		console.log(username)
 		console.log(password)
-		console.log("\nDATA--")
+		console.log(status1)
+		console.log("\nDATA2--")
 		console.log(emailAddress2)
 		console.log(fullname2)
 		console.log(username2)
 		console.log(password)
+		console.log(status2 + "")
 
 		i++
 	}
