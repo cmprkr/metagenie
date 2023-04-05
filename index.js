@@ -190,7 +190,7 @@ async function load() {
 
 	await usernamePage2.waitForSelector('input[id="IGU_name"]');
 	await usernamePage2.focus('input[id="IGU_name"]');
-	await usernamePage2.keyboard.type(fullname);
+	await usernamePage2.keyboard.type(fullname2);
 	
 	await usernamePage2.keyboard.press("Enter")
 	await usernamePage2.waitForTimeout(1500);
@@ -430,14 +430,14 @@ async function load() {
 
 	if (instagramPage2.url().includes('suspended')) {
 
-	  	const accountsuspended = { username2, status: "active, suspended" };
+	  	const accountsuspended = { username: username2, status: "active, suspended" };
 	  	await appendToCSV("accounts.csv", accountsuspended);
 	  	status2 = "SUSPENDED"
 	  	console.log("SUSPENDED ACCOUNT")
 
 	} else {
 
-	  	const accountcreated = { username2, status: "active, live" };
+	  	const accountcreated = { username: username2, status: "active, live" };
 	  	await appendToCSV("accounts.csv", accountcreated);
 	  	status2 = "LIVE"
 	  	console.log("SUSPENDED ACCOUNT")
