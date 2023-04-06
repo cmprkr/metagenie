@@ -440,7 +440,7 @@ async function load() {
 	  	const accountcreated = { username: username2, status: "active, live" };
 	  	await appendToCSV("accounts.csv", accountcreated);
 	  	status2 = "LIVE"
-	  	console.log("SUSPENDED ACCOUNT")
+	  	console.log("LIVE ACCOUNT")
 
 	  	await instagramPage2.keyboard.press("Tab")
 	  	await instagramPage2.keyboard.press("Enter")
