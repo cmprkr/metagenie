@@ -410,6 +410,7 @@ async function load() {
 
 	  	const accountcreated = { username, status: "active, live" };
 	  	await appendToCSV("accounts.csv", accountcreated);
+	  	await appendToCSV("live-accounts.csv", accountcreated);
 	  	status1 = "LIVE"
 	  	console.log("LIVE ACCOUNT")
 
@@ -439,6 +440,7 @@ async function load() {
 
 	  	const accountcreated = { username: username2, status: "active, live" };
 	  	await appendToCSV("accounts.csv", accountcreated);
+	  	await appendToCSV("live-accounts.csv", accountcreated);
 	  	status2 = "LIVE"
 	  	console.log("LIVE ACCOUNT")
 
